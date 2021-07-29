@@ -1,0 +1,5 @@
+# POST http://localhost:5000/api/user/register
+
+# POST http://localhost:5000/api/user/login
+
+GET http://localhost:5000/api/test
