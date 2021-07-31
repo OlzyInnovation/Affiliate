@@ -6,6 +6,7 @@ const {
   registerValidation,
   loginValidation,
 } = require('../validation/validation');
+const sendEmail = require('../utils/sendEmail');
 
 router.post('/register', async (req, res) => {
   // Validation
@@ -50,6 +51,42 @@ router.post('/login', async (req, res) => {
   // Create and Assign Token
   const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
   res.header('auth-token', token).send(token);
+});
+
+router.post('/forgotpassword', async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).send('Error processing your request');
+    }
+
+    const resetToken = user.getResetPasswordToken();
+    await user.save();
+
+    const resetUrl = `http://localhost:${process.env.PORT}/passwordreset/${resetToken}`;
+    const message = `
+    <h1> You have requested a new password reset</h1>
+    <p>Visit <a href=${resetUrl} clicktracking=off>here</a> to reset your password</p>
+    `;
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: 'Password Reset Request',
+        text: message,
+      });
+      res.status(200).json({ success: true, data: 'Email Sent' });
+    } catch (error) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+
+      await user.save;
+      return res.status(500).send('Email could not be sent!');
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;

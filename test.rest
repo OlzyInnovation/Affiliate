@@ -3,3 +3,31 @@
 # POST http://localhost:5000/api/user/login
 
 GET http://localhost:5000/api/test
+
+###
+
+# var request = require('request');
+const fetch = require('fetch');
+# fetch(options, callback);
+fetch(options).then(res => res.json()).then(data => console.log(data));
+
+var headers = {
+    'Authorization': 'Bearer 3c73fd8580fc2752f140d034bda5f146cc71124b',
+    'Content-Type': 'application/json'
+};
+
+var dataString = '{ "long_url": "https://dev.bitly.com", "domain": "bit.ly", "group_guid": "olzyinnovation" }';
+
+var options = {
+    url: 'https://api-ssl.bitly.com/v4/shorten',
+    method: 'POST',
+    headers: headers,
+    body: dataString
+};
+
+function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+        console.log(body);
+    }
+}
+
