@@ -1,23 +1,17 @@
 const router = require('express').Router();
-const facebookController = require('./shareControllers/facebookController');
-const telegramController = require('./shareControllers/telegramController');
-const twitterController = require('./shareControllers/twitterController');
-const wordpressController = require('./shareControllers/twitterController');
+const {
+  wordpress,
+  twitter,
+  telegram,
+  facebook,
+} = require('../controllers/shareControllers/share');
 
-// router.route('/facebook').post(facebookController.add);
+router.route('/wordpress').post(wordpress);
 
-router.route('/telegram').post(telegramController.index);
+router.route('/twitter').post(twitter);
 
-// router
-//   .route('/twitter')
-//   .get(twitterController.index)
-//   .post(twitterController.add)
-//   .put(twitterController.update);
+router.route('/telegram').post(telegram);
 
-// router
-//   .route('/wordpress')
-//   .get(wordpressController.index)
-//   .post(wordpressController.add)
-//   .put(wordpressController.update);
+router.route('/facebook').post(facebook);
 
 module.exports = router;

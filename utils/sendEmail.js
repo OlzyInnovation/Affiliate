@@ -26,6 +26,3 @@ const sendEmail = (options) => {
 };
 
 module.exports = sendEmail;
-
-//  create an account on sendgrid.com
-// Dashboard -> Setup Guide -> Send Your First Email -> SMTP Relay -> Follow the steps

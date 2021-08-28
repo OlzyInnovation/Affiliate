@@ -4,15 +4,15 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 const authRoute = require('./routes/auth');
 const credentialRoute = require('./routes/credentials');
-// const shareRoute = require('./routes/share');
-const convertRoute = require('./routes/convert');
-const protected = require('./jwtRouteTest');
+const shareRoute = require('./routes/share');
+// const convertRoute = require('./routes/convert');
+// const protected = require('./jwtRouteTest');
 
 //Load config
 dotenv.config({ path: 'config/config.env' });
 
 //Connect DB
-// connectDB();
+connectDB();
 
 const app = express();
 
@@ -20,17 +20,17 @@ const app = express();
 app.use(express.json());
 
 //Route Middlewares
-app.use('/api/user', authRoute);
-app.use('/api/credentials', credentialRoute);
-// app.use('/api/share', shareRoute);
-app.use('/api/convert', convertRoute);
-app.use('/api/test', protected);
+app.use('/api/auth/user', authRoute);
+app.use('/api/auth/credentials', credentialRoute);
+app.use('/api/share', shareRoute);
+// app.use('/api/convert', convertRoute);
+// app.use('/api/test', protected);
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(
   PORT,

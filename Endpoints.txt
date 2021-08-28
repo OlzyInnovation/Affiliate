@@ -1,0 +1,29 @@
+1. Account Creation
+/api/auth/user
+
+<=== OPTIONS ===>
+/register => POST
+/login => POST
+/resetpassword => POST
+/forgotpassword => PUT
+
+2. Social Configuration Credentials
+/api/auth/credentials
+
+<=== OPTIONS ===>
+/telegram => POST
+/twitter => POST
+/wordpress => POST
+/facebook => POST
+
+3. Social Share
+/api/share
+
+<=== OPTIONS ===>
+/telegram => POST
+/twitter => POST
+/wordpress => POST
+/facebook => POST
+
+4. Conversion
+/api/convert

@@ -29,7 +29,9 @@
     "passport-google-oauth20": "^2.0.0",
     "pricefinder-ecommerce": "^0.3.4",
     "telegram-keyboard": "^2.2.6",
-    "url-expand": "^0.1.5"
+    "twit": "^2.2.11",
+    "url-expand": "^0.1.5",
+    "wpapi": "^1.2.2"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

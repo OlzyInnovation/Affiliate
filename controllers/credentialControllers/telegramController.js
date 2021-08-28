@@ -4,9 +4,6 @@ const { decoded } = require('../../helpers/decodedJWT');
 
 module.exports = {
   index: async (req, res, next) => {
-    // const token = req.header('auth-token');
-    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     _id = decoded();
 
     const data = await Telegram.findOne({ _id: _id });
@@ -16,22 +13,20 @@ module.exports = {
     res.send(data);
   },
   add: async (req, res, next) => {
-    // const token = req.header('auth-token');
-    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
     _id = decoded();
-    const { url, token, channel } = req.body;
-    const telegramData = new Telegram({
-      _id,
-      url,
-      token,
-      channel,
-    });
-
+    const { _id, url, token, channel } = req.body;
     try {
-      const savedUser = await telegramData.save();
-      res.send(savedUser);
-    } catch (err) {
-      res.status(400).send(err);
+      const user = await Telegram.create({
+        _id,
+        url,
+        token,
+        channel,
+      });
+      res
+        .status(200)
+        .json({ success: true, data: 'Telegram Configuration Added' });
+    } catch (error) {
+      return next(new ErrorResponse('Something went wrong!', 500));
     }
   },
   update: async (req, res, next) => {
