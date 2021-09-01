@@ -1,10 +1,9 @@
-const jwt = require('jsonwebtoken');
 const Telegram = require('../../models/socialCredentials/Telegram');
 const { decoded } = require('../../helpers/decodedJWT');
 
 module.exports = {
   index: async (req, res, next) => {
-    _id = decoded();
+    _id = decoded(req);
 
     const data = await Telegram.findOne({ _id: _id });
 
@@ -13,14 +12,13 @@ module.exports = {
     res.send(data);
   },
   add: async (req, res, next) => {
-    _id = decoded();
-    const { _id, url, token, channel } = req.body;
+    _id = decoded(req);
+    const { channel, token } = req.body;
     try {
       const user = await Telegram.create({
         _id,
-        url,
-        token,
         channel,
+        token,
       });
       res
         .status(200)

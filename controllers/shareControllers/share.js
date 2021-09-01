@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const axios = require('axios');
 var WPAPI = require('wpapi');
 // var WPAPI = require( 'wpapi/superagent' );
@@ -38,7 +37,7 @@ exports.wordpress = async (req, res, next) => {
 };
 exports.twitter = async (req, res, next) => {
   const { content } = req.body;
-  id = decoded();
+  id = decoded(req);
   data = await Twitter.findOne({ _id: id });
 
   consumer_key = data.consumer_key;

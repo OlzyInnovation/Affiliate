@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const ownShortenerSchema = new mongoose.Schema({
   _id: String,
-  shortener: type: String,
+  shortener: String,
   status: {
     type: Number,
     default: 0,
