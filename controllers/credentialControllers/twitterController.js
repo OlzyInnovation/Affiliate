@@ -34,7 +34,12 @@ module.exports = {
   },
   update: async (req, res, next) => {
     id = decoded(req);
-    const { consumer_key, consumer_secret, access_token, access_token_secret } = req.body;
+    const {
+      consumer_key,
+      consumer_secret,
+      access_token,
+      access_token_secret,
+    } = req.body;
 
     try {
       if (consumer_key) {
@@ -47,13 +52,22 @@ module.exports = {
       }
 
       if (consumer_secret) {
-        await Twitter.updateOne({ _id: id }, { $set: { consumer_secret: consumer_secret } });
+        await Twitter.updateOne(
+          { _id: id },
+          { $set: { consumer_secret: consumer_secret } }
+        );
       }
       if (access_token) {
-        await Twitter.updateOne({ _id: id }, { $set: { access_token: access_token } });
+        await Twitter.updateOne(
+          { _id: id },
+          { $set: { access_token: access_token } }
+        );
       }
       if (access_token_secret) {
-        await Twitter.updateOne({ _id: id }, { $set: { access_token_secret: access_token_secret } });
+        await Twitter.updateOne(
+          { _id: id },
+          { $set: { access_token_secret: access_token_secret } }
+        );
       }
 
       res.status(201).json({
@@ -70,7 +84,12 @@ module.exports = {
 
   delete: async (req, res, next) => {
     id = decoded(req);
-    const { consumer_key, consumer_secret, access_token, access_token_secret } = req.body;
+    const {
+      consumer_key,
+      consumer_secret,
+      access_token,
+      access_token_secret,
+    } = req.body;
     try {
       if (consumer_key) {
         await Twitter.remove(
@@ -82,13 +101,16 @@ module.exports = {
       }
 
       if (consumer_secret) {
-        await Twitter.remove({ _id: id }, { consumer_secret: consumer_secret } );
+        await Twitter.remove({ _id: id }, { consumer_secret: consumer_secret });
       }
       if (access_token) {
         await Twitter.remove({ _id: id }, { access_token: access_token });
       }
       if (access_token_secret) {
-        await Twitter.remove({ _id: id },  { access_token_secret: access_token_secret  });
+        await Twitter.remove(
+          { _id: id },
+          { access_token_secret: access_token_secret }
+        );
       }
 
       res.status(201).json({
@@ -101,5 +123,5 @@ module.exports = {
         data: 'Something went wrong!, Please try again',
       });
     }
+  },
 };
-
