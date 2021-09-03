@@ -3,16 +3,16 @@ const { decoded } = require('../../helpers/decodedJWT');
 
 module.exports = {
   index: async (req, res, next) => {
-    _id = decoded();
+    id = decoded(req);
 
-    const data = await OwnShortener.findOne({ _id: _id });
+    const data = await OwnShortener.findOne({ _id: id });
 
     if (!data) res.status(400).send('No credentials added yet!');
 
     res.send(data);
   },
   add: async (req, res, next) => {
-    _id = decoded();
+    _id = decoded(req);
 
     const { shortener } = req.body;
     try {
@@ -28,19 +28,51 @@ module.exports = {
     }
   },
   update: async (req, res, next) => {
-    //Implement verifications & prevent double error
-    // const data = await OwnShortener.findOne({ _id: req.OwnShortener._id });
-    // if (!data) res.status(400).send('No credentials added yet!');
-    // const OwnShortenerData = new OwnShortener({
-    //   _id: req.OwnShortener._id,
-    //   url: req.body.url,
-    //   token: req.body.token,
-    // });
-    // try {
-    //   const savedUser = await OwnShortenerData.save();
-    //   res.send(savedUser);
-    // } catch (err) {
-    //   res.status(400).send(err);
-    // }
+    id = decoded(req);
+    const { shortener } = req.body;
+
+    try {
+      if (shortener) {
+        await OwnShortener.updateOne(
+          {
+            _id: id,
+          },
+          { $set: { shortener: shortener } }
+        );
+      }
+      res.status(201).json({
+        success: true,
+        data: 'Shortener Configuration Updated Successfully',
+      });
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        data: 'Something went wrong!, Please try again',
+      });
+    }
+  },
+  delete: async (req, res, next) => {
+    id = decoded(req);
+    const { shortener } = req.body;
+    try {
+      if (shortener) {
+        await OwnShortener.deleteOne(
+          {
+            _id: id,
+          },
+          { shortener: shortener }
+        );
+      }
+
+      res.status(201).json({
+        success: true,
+        data: 'Shortener Configuration Updated Successfully',
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        data: 'Something went wrong!, Please try again',
+      });
+    }
   },
 };

@@ -3,9 +3,9 @@ const { decoded } = require('../../helpers/decodedJWT');
 
 module.exports = {
   index: async (req, res, next) => {
-    _id = decoded(req);
+    id = decoded(req);
 
-    const data = await Facebook.findOne({ _id: _id });
+    const data = await Facebook.findOne({ _id: id });
 
     if (!data) {
       res.status(400).send('No credentials added yet!');
@@ -18,7 +18,7 @@ module.exports = {
 
     const { url, token } = req.body;
     try {
-      const user = await Facebook.create({
+      await Facebook.create({
         _id,
         url,
         token,
@@ -31,19 +31,66 @@ module.exports = {
     }
   },
   update: async (req, res, next) => {
-    //Implement verifications & prevent double error
-    // const data = await Facebook.findOne({ _id: req.header._id });
-    // if (!data) res.status(400).send('No credentials added yet!');
-    // const telegramData = new Telegram({
-    //   _id: req.header._id,
-    //   url: req.body.url,
-    //   token: req.body.token,
-    // });
-    // try {
-    //   const savedUser = await telegramData.save();
-    //   res.send(savedUser);
-    // } catch (err) {
-    //   res.status(400).send(err);
-    // }
+    id = decoded(req);
+    const { url, token } = req.body;
+
+    try {
+      if (token) {
+        await Facebook.updateOne(
+          {
+            _id: id,
+          },
+          { $set: { token: token } }
+        );
+      }
+
+      if (url) {
+        await Facebook.updateOne({ _id: id }, { $set: { url: url } });
+      }
+
+      res.status(201).json({
+        success: true,
+        data: 'Facebook Configuration Updated Successfully',
+      });
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        data: 'Something went wrong!, Please try again',
+      });
+    }
+  },
+
+  delete: async (req, res, next) => {
+    id = decoded(req);
+    const { url, token } = req.body;
+    try {
+      if (token) {
+        await Facebook.deleteOne(
+          {
+            _id: id,
+          },
+          { token: token }
+        );
+      }
+
+      if (url) {
+        await Facebook.deleteOne(
+          {
+            _id: id,
+          },
+          { url: url }
+        );
+      }
+
+      res.status(201).json({
+        success: true,
+        data: 'Facebook Configuration Updated Successfully',
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        data: 'Something went wrong!, Please try again',
+      });
+    }
   },
 };

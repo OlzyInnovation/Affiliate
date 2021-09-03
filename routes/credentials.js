@@ -13,8 +13,9 @@ router
 router
   .route('/telegram')
   .get(telegramController.index)
-  .post(telegramController.add);
-// .put(telegramController.update);
+  .post(telegramController.add)
+  .put(telegramController.update)
+  .delete(telegramController.delete)
 
 router
   .route('/twitter')

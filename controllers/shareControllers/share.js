@@ -11,7 +11,7 @@ const ErrorResponse = require('../../utils/errorResponse');
 
 exports.wordpress = async (req, res, next) => {
   const { title, content } = req.body;
-  id = decoded();
+  id = decoded(req);
   data = await Wordpress.findOne({ _id: id });
   endpoint = data.url;
   username = data.username;
@@ -71,7 +71,7 @@ exports.twitter = async (req, res, next) => {
 };
 exports.telegram = async (req, res, next) => {
   const { content } = req.body;
-  id = decoded();
+  id = decoded(req);
   data = await Telegram.findOne({ _id: id });
 
   channels = data.channel;

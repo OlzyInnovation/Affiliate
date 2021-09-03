@@ -3,9 +3,9 @@ const { decoded } = require('../../helpers/decodedJWT');
 
 module.exports = {
   index: async (req, res, next) => {
-    _id = decoded(req);
+    id = decoded(req);
 
-    const data = await Telegram.findOne({ _id: _id });
+    const data = await Telegram.findOne({ _id: id });
 
     if (!data) res.status(400).send('No credentials added yet!');
 
@@ -15,7 +15,7 @@ module.exports = {
     _id = decoded(req);
     const { channel, token } = req.body;
     try {
-      const user = await Telegram.create({
+      await Telegram.create({
         _id,
         channel,
         token,
@@ -28,19 +28,64 @@ module.exports = {
     }
   },
   update: async (req, res, next) => {
-    //Implement verifications & prevent double error
-    // const data = await Telegram.findOne({ _id: req.header._id });
-    // if (!data) res.status(400).send('No credentials added yet!');
-    // const telegramData = new Telegram({
-    //   _id: req.header._id,
-    //   url: req.body.url,
-    //   token: req.body.token,
-    // });
-    // try {
-    //   const savedUser = await telegramData.save();
-    //   res.send(savedUser);
-    // } catch (err) {
-    //   res.status(400).send(err);
-    // }
+    id = decoded(req);
+    const { channel, token } = req.body;
+
+    try {
+      if (token) {
+        await Telegram.updateOne(
+          {
+            _id: id,
+          },
+          { $set: { token: token } }
+        );
+      }
+
+      if (channel) {
+        await Telegram.updateOne(
+          { _id: id },
+          { $addToSet: { channel: channel } }
+        );
+      }
+
+      res.status(201).json({
+        success: true,
+        data: 'Telegram Configuration Updated Successfully',
+      });
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        data: 'Something went wrong!, Please try again',
+      });
+    }
+  },
+
+  delete: async (req, res, next) => {
+    id = decoded(req);
+    const { channel, token } = req.body;
+    try {
+      if (token) {
+        await Telegram.deleteOne(
+          {
+            _id: id,
+          },
+          { token: token }
+        );
+      }
+
+      if (channel) {
+        await Telegram.deleteOne({ _id: id }, { $pull: { channel: channel } });
+      }
+
+      res.status(201).json({
+        success: true,
+        data: 'Telegram Configuration Updated Successfully',
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        data: 'Something went wrong!, Please try again',
+      });
+    }
   },
 };
