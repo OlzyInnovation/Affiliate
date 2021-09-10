@@ -3,11 +3,11 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 const authRoute = require('./routes/auth');
+const adminRoute = require('./routes/admin');
 const credentialRoute = require('./routes/credentials');
 const shareRoute = require('./routes/share');
 const miscRoute = require('./routes/misc');
-// const convertRoute = require('./routes/convert');
-// const protected = require('./jwtRouteTest');
+const convertRoute = require('./routes/convert');
 
 //Load config
 dotenv.config({ path: 'config/config.env' });
@@ -21,12 +21,12 @@ const app = express();
 app.use(express.json());
 
 //Route Middlewares
+app.use('/api/auth/admin', adminRoute);
 app.use('/api/auth/user', authRoute);
 app.use('/api/auth/credentials', credentialRoute);
 app.use('/api/auth/misc', miscRoute);
 app.use('/api/share', shareRoute);
-// app.use('/api/convert', convertRoute);
-// app.use('/api/test', protected);
+app.use('/api/convert', convertRoute);
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));

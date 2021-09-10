@@ -32,7 +32,7 @@ module.exports = {
   },
   update: async (req, res, next) => {
     id = decoded(req);
-    const { url, token } = req.body;
+    const { url, token, status } = req.body;
 
     try {
       if (token) {
@@ -46,6 +46,9 @@ module.exports = {
 
       if (url) {
         await Facebook.updateOne({ _id: id }, { $set: { url: url } });
+      }
+      if (status) {
+        await Facebook.updateOne({ _id: id }, { $set: { status: status } });
       }
 
       res.status(201).json({
@@ -62,7 +65,7 @@ module.exports = {
 
   delete: async (req, res, next) => {
     id = decoded(req);
-    const { url, token } = req.body;
+    const { url, token, status } = req.body;
     try {
       if (token) {
         await Facebook.deleteOne(
@@ -79,6 +82,15 @@ module.exports = {
             _id: id,
           },
           { url: url }
+        );
+      }
+
+      if (status) {
+        await Facebook.deleteOne(
+          {
+            _id: id,
+          },
+          { status: status }
         );
       }
 

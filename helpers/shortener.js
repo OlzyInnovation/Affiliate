@@ -2,6 +2,7 @@ const fetch = require('node-fetch');
 
 exports.shorten = (url) => {
   var headers = {
+    // EDIT Bearer key before upload
     Authorization: `Bearer 3c73fd8580fc2752f140d034bda5f146cc71124b`,
     'Content-Type': 'application/json',
   };

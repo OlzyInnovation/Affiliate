@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
 const Wordpress = require('../../models/socialCredentials/Wordpress');
+const { decoded } = require('../../helpers/decodedJWT');
 
 module.exports = {
   index: async (req, res, next) => {
