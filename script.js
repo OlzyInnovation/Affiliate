@@ -11,24 +11,24 @@
 // console.log('Domain', domain);
 // console.log('Host', host);
 // console.log('Params', params);
-final = 'https://amazon.com';
+// final = 'https://amazon.com';
 
-domain = new URL(final);
-host = domain.hostname;
-params = domain.searchParams;
-let new_url;
-// search_params = url.searchParams;
+// domain = new URL(final);
+// host = domain.hostname;
+// params = domain.searchParams;
+// let new_url;
+// // search_params = url.searchParams;
 
-if (host.includes('amazon')) {
-  params.set('affid', 'inr_deals_uname');
-  domain.search = params.toString();
-  new_url = domain.toString();
-}
+// if (host.includes('amazon')) {
+//   params.set('affid', 'inr_deals_uname');
+//   domain.search = params.toString();
+//   new_url = domain.toString();
+// }
 
-console.log('Domain', domain);
-console.log('Host', host);
-console.log('Params', params);
-console.log('New', new_url);
+// console.log('Domain', domain);
+// console.log('Host', host);
+// console.log('Params', params);
+// console.log('New', new_url);
 
 // var url = new URL('http://demourl.com/path?id=100&topic=main');
 // var search_params = url.searchParams;
@@ -44,3 +44,17 @@ console.log('New', new_url);
 
 // // output : http://demourl.com/path?id=101&topic=main
 // console.log(new_url);
+
+// channels = [{ channel: 'my_channel', token: 'my_token', status: '1' }];
+
+// channels.map(({ channel, token, status }) => {
+//   if (channel && token) {
+//     console.log('Channel', channel);
+//     console.log('Token', token);
+//   }
+//   if (status) {
+//     console.log('Status', parseInt(status));
+//   } else {
+//     console.log('No status set');
+//   }
+// });

@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const Telegram = require('../../models/socialCredentials/Telegram');
 const { decoded } = require('../../helpers/decodedJWT');
 
@@ -7,44 +8,55 @@ module.exports = {
 
     const data = await Telegram.findOne({ _id: id });
 
-    if (!data) res.status(400).send('No credentials added yet!');
+    if (!data) res.status(200).send('No credentials added yet!');
 
     res.send(data);
   },
   add: async (req, res, next) => {
-    _id = decoded(req);
-    const { channel, token } = req.body;
+    id = decoded(req);
+    let conf = req.body;
+    generate = uuidv4();
+    conf._id = id;
+    conf.status = 0;
+    conf.track = generate;
+
     try {
       await Telegram.create({
-        _id,
-        channel,
-        token,
+        channels: conf,
       });
+
       res
         .status(200)
-        .json({ success: true, data: 'Telegram Configuration Added' });
+        .json({ success: true, message: 'Telegram Configuration Added' });
     } catch (error) {
-      return next(new ErrorResponse('Something went wrong!', 500));
+      // return next(new ErrorResponse('Something went wrong!', 500));
+      res
+        .status(400)
+        .json({ success: false, message: 'Something went wrong!' });
     }
   },
   update: async (req, res, next) => {
     id = decoded(req);
-    const { channel, token } = req.body;
+    let { channel, token, status, track } = req.body;
 
     try {
       if (token) {
         await Telegram.updateOne(
           {
             _id: id,
+            channels: { $elemMatch: { track: track } },
           },
-          { $set: { token: token } }
+          { $set: { 'channels.$.token': token } }
         );
       }
 
       if (channel) {
         await Telegram.updateOne(
-          { _id: id },
-          { $addToSet: { channel: channel } }
+          {
+            _id: id,
+            channels: { $elemMatch: { track: track } },
+          },
+          { $set: { 'channels.$.channel': channel } }
         );
       }
 
@@ -68,13 +80,17 @@ module.exports = {
         await Telegram.deleteOne(
           {
             _id: id,
+            channels: { $elemMatch: { track: track } },
           },
-          { token: token }
+          { $pull: { token: token } }
         );
       }
 
       if (channel) {
-        await Telegram.deleteOne({ _id: id }, { $pull: { channel: channel } });
+        await Telegram.deleteOne(
+          { _id: id, channels: { $elemMatch: { track: track } } },
+          { $pull: { channel: channel } }
+        );
       }
 
       res.status(201).json({
