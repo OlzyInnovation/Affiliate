@@ -17,5 +17,7 @@ exports.shorten = (url) => {
 
   fetch('https://api-ssl.bitly.com/v4/shorten', option)
     .then((res) => res.json())
-    .then((data) => console.log(data));
+    .then((data) => {
+      return data;
+    });
 };

@@ -1,13 +1,15 @@
 const mongoose = require('mongoose');
 
 const facebookSchema = new mongoose.Schema({
-  _id: String,
-  url: String,
-  token: String,
-  status: {
-    type: Number,
-    default: 0,
-  },
+  facebookConfig: [
+    {
+      _id: String,
+      url: String,
+      token: String,
+      status: String,
+      track: String,
+    },
+  ],
 });
 
 module.exports = mongoose.model('Facebook', facebookSchema);

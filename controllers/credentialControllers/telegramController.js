@@ -6,30 +6,39 @@ module.exports = {
   index: async (req, res, next) => {
     id = decoded(req);
 
-    const data = await Telegram.findOne({ _id: id });
-
+    const data = await Telegram.find();
     if (!data) res.status(200).send('No credentials added yet!');
 
-    res.send(data);
+    try {
+      filtered = data.map(({ telegramChannels }) => {
+        if (telegramChannels && telegramChannels[0]._id == id)
+          return telegramChannels;
+      });
+
+      res.status(200).send(filtered);
+    } catch (err) {
+      res
+        .status(400)
+        .json({ success: false, message: 'Something went wrong!' });
+    }
   },
   add: async (req, res, next) => {
     id = decoded(req);
     let conf = req.body;
     generate = uuidv4();
     conf._id = id;
-    conf.status = 0;
+    conf.status = '0';
     conf.track = generate;
 
     try {
       await Telegram.create({
-        channels: conf,
+        telegramChannels: conf,
       });
 
       res
         .status(200)
         .json({ success: true, message: 'Telegram Configuration Added' });
     } catch (error) {
-      // return next(new ErrorResponse('Something went wrong!', 500));
       res
         .status(400)
         .json({ success: false, message: 'Something went wrong!' });
@@ -37,50 +46,54 @@ module.exports = {
   },
   update: async (req, res, next) => {
     id = decoded(req);
-    let { channel, token, status, track } = req.body;
+    let { token, channel, status, track } = req.body;
 
     try {
       if (token) {
         await Telegram.updateOne(
           {
-            _id: id,
-            channels: { $elemMatch: { track: track } },
+            telegramChannels: { $elemMatch: { track: track, _id: id } },
           },
-          { $set: { 'channels.$.token': token } }
+          { $set: { 'telegramChannels.$.token': token } }
         );
       }
 
       if (channel) {
         await Telegram.updateOne(
           {
-            _id: id,
-            channels: { $elemMatch: { track: track } },
+            telegramChannels: { $elemMatch: { track: track, _id: id } },
           },
-          { $set: { 'channels.$.channel': channel } }
+          { $set: { 'telegramChannels.$.channel': channel } }
         );
       }
-
+      if (status) {
+        await Telegram.updateOne(
+          {
+            telegramChannels: { $elemMatch: { track: track, _id: id } },
+          },
+          { $set: { 'telegramChannels.$.status': status } }
+        );
+      }
       res.status(201).json({
         success: true,
-        data: 'Telegram Configuration Updated Successfully',
+        message: 'Telegram Configuration Updated Successfully',
       });
     } catch (err) {
       res.status(500).json({
         success: false,
-        data: 'Something went wrong!, Please try again',
+        message: 'Something went wrong!, Please try again',
       });
     }
   },
 
   delete: async (req, res, next) => {
     id = decoded(req);
-    const { channel, token } = req.body;
+    const { channel, token, track } = req.body;
     try {
       if (token) {
         await Telegram.deleteOne(
           {
-            _id: id,
-            channels: { $elemMatch: { track: track } },
+            telegramChannels: { $elemMatch: { track: track, _id: id } },
           },
           { $pull: { token: token } }
         );
@@ -88,19 +101,21 @@ module.exports = {
 
       if (channel) {
         await Telegram.deleteOne(
-          { _id: id, channels: { $elemMatch: { track: track } } },
+          {
+            telegramChannels: { $elemMatch: { track: track, _id: id } },
+          },
           { $pull: { channel: channel } }
         );
       }
 
       res.status(201).json({
         success: true,
-        data: 'Telegram Configuration Updated Successfully',
+        message: 'Telegram Configuration Updated Successfully',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        data: 'Something went wrong!, Please try again',
+        message: 'Something went wrong!, Please try again',
       });
     }
   },

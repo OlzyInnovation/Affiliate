@@ -58,3 +58,54 @@
 //     console.log('No status set');
 //   }
 // });
+
+// data = [
+//   {
+//     _id: '61418f5fc101033460b9aa14',
+//     channels: [
+//       {
+//         token: 'my_token',
+//         channel: 'my_channel',
+//         _id: '613f605ab98e9029c0c02c2a',
+//         status: 0,
+//         track: '8dedab71-d749-49fd-b201-dd4bff9f93a3',
+//       },
+//     ],
+//     __v: 0,
+//   },
+//   {
+//     _id: '61418f76c101033460b9aa16',
+//     channels: [
+//       {
+//         token: 'another_token',
+//         channel: 'my_channel',
+//         _id: '613f605ab98e9029c0c02c2a',
+//         status: 0,
+//         track: 'c9f99644-5793-4424-a8f7-3c0e3496c132',
+//       },
+//     ],
+//     __v: 0,
+//   },
+//   {
+//     _id: '61418f9ac101033460b9aa18',
+//     channels: [
+//       {
+//         token: 'another_token',
+//         channel: 'another_channel',
+//         _id: '613f605ab98e9029c0c02c2a',
+//         status: 0,
+//         track: '46ee1d34-1b1b-4b1a-bfaf-12a5995b734d',
+//       },
+//     ],
+//     __v: 0,
+//   },
+// ];
+
+// console.log(data);
+
+// sth = data.map(({ channels }) => {
+//   if (channels && channels[0]._id == '613f605ab98e9029c0c02c2a')
+//     return channels;
+// });
+
+// console.log(sth);

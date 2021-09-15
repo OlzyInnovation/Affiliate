@@ -5,103 +5,116 @@ module.exports = {
   index: async (req, res, next) => {
     id = decoded(req);
 
-    const data = await Facebook.findOne({ _id: id });
+    const data = await Facebook.find();
+    if (!data) res.status(200).send('No credentials added yet!');
 
-    if (!data) {
-      res.status(400).send('No credentials added yet!');
+    try {
+      filtered = data.map(({ facebookConfig }) => {
+        if (facebookConfig && facebookConfig[0]._id == id)
+          return facebookConfig;
+      });
+
+      res.status(200).send(filtered);
+    } catch (err) {
+      res
+        .status(400)
+        .json({ success: false, message: 'Something went wrong!' });
     }
-
-    res.send(data);
   },
   add: async (req, res, next) => {
-    _id = decoded(req);
+    id = decoded(req);
+    let conf = req.body;
+    generate = uuidv4();
+    conf._id = id;
+    conf.status = '0';
+    conf.track = generate;
 
-    const { url, token } = req.body;
     try {
       await Facebook.create({
-        _id,
-        url,
-        token,
+        facebookConfig: conf,
       });
+
       res
         .status(200)
-        .json({ success: true, data: 'Facebook Configuration Added' });
+        .json({ success: true, message: 'Facebook Configuration Added' });
     } catch (error) {
-      return next(new ErrorResponse('Something went wrong!', 500));
+      res
+        .status(400)
+        .json({ success: false, message: 'Something went wrong!' });
     }
   },
   update: async (req, res, next) => {
     id = decoded(req);
-    const { url, token, status } = req.body;
+    let { url, token, status, track } = req.body;
 
     try {
-      if (token) {
+      if (url) {
         await Facebook.updateOne(
           {
-            _id: id,
+            facebookConfig: { $elemMatch: { track: track, _id: id } },
           },
-          { $set: { token: token } }
+          { $set: { 'facebookConfig.$.url': url } }
         );
       }
 
-      if (url) {
-        await Facebook.updateOne({ _id: id }, { $set: { url: url } });
-      }
-      if (status) {
-        await Facebook.updateOne({ _id: id }, { $set: { status: status } });
+      if (token) {
+        await Facebook.updateOne(
+          {
+            facebookConfig: { $elemMatch: { track: track, _id: id } },
+          },
+          { $set: { 'facebookConfig.$.token': token } }
+        );
       }
 
+      if (status) {
+        await Facebook.updateOne(
+          {
+            facebookConfig: { $elemMatch: { track: track, _id: id } },
+          },
+          { $set: { 'facebookConfig.$.status': status } }
+        );
+      }
       res.status(201).json({
         success: true,
-        data: 'Facebook Configuration Updated Successfully',
+        message: 'Facebook Configuration Updated Successfully',
       });
     } catch (err) {
       res.status(500).json({
         success: false,
-        data: 'Something went wrong!, Please try again',
+        message: 'Something went wrong!, Please try again',
       });
     }
   },
 
   delete: async (req, res, next) => {
     id = decoded(req);
-    const { url, token, status } = req.body;
+    const { url, token, status, track } = req.body;
     try {
-      if (token) {
-        await Facebook.deleteOne(
-          {
-            _id: id,
-          },
-          { token: token }
-        );
-      }
-
       if (url) {
         await Facebook.deleteOne(
           {
-            _id: id,
+            facebookConfig: { $elemMatch: { track: track, _id: id } },
           },
-          { url: url }
+          { $pull: { url: url } }
         );
       }
-
-      if (status) {
+      if (token) {
         await Facebook.deleteOne(
           {
-            _id: id,
+            facebookConfig: { $elemMatch: { track: track, _id: id } },
           },
-          { status: status }
+          { $pull: { token: token } }
         );
       }
 
       res.status(201).json({
         success: true,
-        data: 'Facebook Configuration Updated Successfully',
+        message: 'Facebook Configuration Updated Successfully',
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        data: 'Something went wrong!, Please try again',
+        message: 'Something went wrong!, Please try again',
       });
     }
   },

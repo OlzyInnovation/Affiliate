@@ -1,13 +1,15 @@
 const mongoose = require('mongoose');
 
 const urlReplacerSchema = new mongoose.Schema({
-  _id: String,
-  url: [{ type: String }],
-  restore: [{ type: String }],
-  status: {
-    type: Number,
-    default: 0,
-  },
+  urlConfig: [
+    {
+      _id: String,
+      url: String,
+      restore: String,
+      status: String,
+      track: String,
+    },
+  ],
 });
 
 module.exports = mongoose.model('URLReplacer', urlReplacerSchema);
