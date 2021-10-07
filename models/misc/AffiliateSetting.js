@@ -12,6 +12,7 @@ const affilateSchema = new mongoose.Schema({
   convert_flipkart: String,
   convert_others: String,
   status: String,
+  template: String,
 });
 
 module.exports = mongoose.model('Affiliates', affilateSchema);

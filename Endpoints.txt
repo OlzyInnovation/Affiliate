@@ -27,3 +27,84 @@
 
 4. Conversion
 /api/convert
+
+
+
+
+
+
+
+
+
+
+
+if(convert_amzn == 'amazon' && host.includes('amazon')){
+  amzn_tag_id = data.amazon_tag_id || '';
+  params.set('tag', amzn_tag_id);
+  domain.search = params.toString();
+  new_url = domain.toString();
+}
+// }else if(convert_flip == 'flipkart' && host.includes('flipkart')){
+//     inr_deals_uname = data.inr_deals_username || '';
+//     params.set('affid', inr_deals_uname);
+//     new_url = domain.toString();
+// }else {
+//   if (
+//     (convert_amzn == 'inrdeals' && host.includes('amazon')) ||
+//     (convert_flip == 'inrdeals' && host.includes('flipkart')) ||
+//     (convert_others == 'inrdeals')
+//   ) {
+//     new_url = `https://inr.deals/track?id=${data.inr_deals_username}&src=affiliaters&url=${domain}`
+//   }
+
+//   if (
+//     (convert_amzn == 'cuelinks' && host.includes('amazon')) ||
+//     (convert_flip == 'cuelinks' && host.includes('flipkart')) ||
+//     convert_others == 'cuelinks'
+//   ) {
+//     new_url = `https://linksredirect.com/?cid=${data.cuelinks_id&}source=linkkit&url=${domain}`;
+
+//   }
+
+//   if (
+//     (convert_amzn == 'earnkaro' && host.includes('amazon')) ||
+//     (convert_flip == 'earnkaro' && host.includes('flipkart')) ||
+//     convert_others == 'earnkaro'
+//   ) {
+//     const instance = axios.create({
+//   headers: { 'x-api-key': 'h16BYF2WhS6xQ7FYXKuTTLhKSfVPQ6z2MBTvZIyg', 'Accept': 'application/json', 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)' }
+// });
+
+// var datatopost = {
+//   "data": {
+//     "type": "createexternalearnlink",
+//     "attributes": {
+//       "userid": 91056,
+//       "links": [
+//         'https://www.myntra.com'
+//       ],
+//       "ip_address": "10.0.0.1"
+//     }
+//   }
+// }
+// instance.post('https://middleware.ckaro.in/api/convert/ekaro', datatopost)
+//   .then(function(response) {
+//          var converted_url = response.data.data[0].ekaro_url
+// }
+//   //   earnkaro_referral_link: String,
+//   // earnkaro_id: String,
+//     new_url = `https://linksredirect.com/?cid=${data.cuelinks_id&}source=linkkit&url=${domain}`;
+
+//   }
+// }
+
+
+
+
+  instance
+          .post('https://middleware.ckaro.in/api/convert/ekaro', datatopost)
+          .then(({ data }) => {
+            new_url = data.data[0].ekaro_url;
+          });
+      }
+    }
