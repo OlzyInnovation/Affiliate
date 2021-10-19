@@ -54,9 +54,10 @@ exports.forgotpassword = async (req, res, next) => {
     await user.save();
 
     const resetUrl = `${process.env.WEBPAGE_URL}/passwordreset/${resetToken}`;
+    console.log(resetToken);
     const message = `
       <h1>You have requested a password reset</h1>
-      <p>Visit <a href=${resetUrl} clicktracking=off>here</a> to reset your password</p>
+      <p>Click <a href=${resetUrl} clicktracking=off>here</a> to reset your password</p>
       `;
 
     try {
@@ -83,14 +84,17 @@ exports.resetpassword = async (req, res, next) => {
     .createHash('sha256')
     .update(req.params.resetToken)
     .digest('hex');
+
   try {
     const user = await User.findOne({
       resetPasswordToken,
       resetPasswordExpire: { $gt: Date.now() },
     });
+
     if (!user) {
-      return next(new ErrorResponse('Invalid Reset Token', 400));
+      return next(new ErrorResponse('Invalid Token', 400));
     }
+
     user.password = req.body.password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
@@ -99,10 +103,10 @@ exports.resetpassword = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      data: 'Password Reset Success',
+      data: 'Password Updated Success',
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 

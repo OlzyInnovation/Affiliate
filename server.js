@@ -23,6 +23,7 @@ app.use(express.json());
 //Route Middlewares
 app.use('/api/auth/admin', adminRoute);
 app.use('/api/auth/user', authRoute);
+app.use('/api/private', require('./routes/private'));
 app.use('/api/auth/credentials', credentialRoute);
 app.use('/api/auth/misc', miscRoute);
 app.use('/api/share', shareRoute);
